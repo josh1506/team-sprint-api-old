@@ -1,0 +1,84 @@
+version: '3'
+
+volumes:
+  team_sprint_local_postgres_data: {}
+  team_sprint_local_postgres_data_backups: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: team_sprint_local_django
+    container_name: team_sprint_local_django
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - "8000:8000"
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: team_sprint_production_postgres
+    container_name: team_sprint_local_postgres
+    volumes:
+      - team_sprint_local_postgres_data:/var/lib/postgresql/data
+      - team_sprint_local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+
+  docs:
+    image: team_sprint_local_docs
+    container_name: team_sprint_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./team_sprint:/app/team_sprint:z
+    ports:
+      - "9000:9000"
+    command: /start-docs
+
+  redis:
+    image: redis:6
+    container_name: team_sprint_local_redis
+
+  celeryworker:
+    <<: *django
+    image: team_sprint_local_celeryworker
+    container_name: team_sprint_local_celeryworker
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: team_sprint_local_celerybeat
+    container_name: team_sprint_local_celerybeat
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celerybeat
+
+  flower:
+    <<: *django
+    image: team_sprint_local_flower
+    container_name: team_sprint_local_flower
+    ports:
+      - "5555:5555"
+    command: /start-flower

@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=team_sprint
+POSTGRES_USER=pwVIcvxbuEmQGNrJgJRghJIJSrVtnYVE
+POSTGRES_PASSWORD=cBtlkP3h3JhMYnHu0Z2xU0m8mIE20QvEbpQUGEP9ZgsWD2JOLEyyVyni5sZ1L9Mh
