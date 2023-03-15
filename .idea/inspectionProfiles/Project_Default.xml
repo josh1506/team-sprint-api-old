@@ -5,7 +5,7 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="111">
+          <list size="112">
             <item index="0" class="java.lang.String" itemvalue="httpx" />
             <item index="1" class="java.lang.String" itemvalue="greenlet" />
             <item index="2" class="java.lang.String" itemvalue="factory-boy" />
@@ -117,6 +117,7 @@
             <item index="108" class="java.lang.String" itemvalue="click-plugins" />
             <item index="109" class="java.lang.String" itemvalue="google-cloud-firestore" />
             <item index="110" class="java.lang.String" itemvalue="google-auth" />
+            <item index="111" class="java.lang.String" itemvalue="psycopg2" />
           </list>
         </value>
       </option>

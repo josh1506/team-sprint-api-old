@@ -78,6 +78,10 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "team_sprint.users",
+    "team_sprint.organization",
+    "team_sprint.sprint",
+    "team_sprint.project",
+    "team_sprint.task",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
