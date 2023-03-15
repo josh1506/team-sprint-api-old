@@ -19,7 +19,5 @@ class ProjectAdmin(admin.ModelAdmin):
         "lead",
         "organization",
     )
-    list_filter = (
-        "privacy",
-    )
+    list_filter = ("privacy",)
     exclude = ("date_created",)

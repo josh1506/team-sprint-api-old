@@ -12,20 +12,44 @@ class OrganizationAdmin(admin.ModelAdmin):
 
 @admin.register(PriorityType)
 class PriorityTypeAdmin(admin.ModelAdmin):
-    list_display = ("name", "organization", "created_by",)
-    search_fields = ("name", "organization", "created_by",)
+    list_display = (
+        "name",
+        "organization",
+        "created_by",
+    )
+    search_fields = (
+        "name",
+        "organization",
+        "created_by",
+    )
     exclude = ("date_created",)
 
 
 @admin.register(StatusType)
 class StatusTypeAdmin(admin.ModelAdmin):
-    list_display = ("name", "organization", "created_by",)
-    search_fields = ("name", "organization", "created_by",)
+    list_display = (
+        "name",
+        "organization",
+        "created_by",
+    )
+    search_fields = (
+        "name",
+        "organization",
+        "created_by",
+    )
     exclude = ("date_created",)
 
 
 @admin.register(TaskType)
 class TaskTypeAdmin(admin.ModelAdmin):
-    list_display = ("name", "organization", "created_by",)
-    search_fields = ("name", "organization", "created_by",)
+    list_display = (
+        "name",
+        "organization",
+        "created_by",
+    )
+    search_fields = (
+        "name",
+        "organization",
+        "created_by",
+    )
     exclude = ("date_created",)

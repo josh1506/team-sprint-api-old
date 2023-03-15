@@ -11,11 +11,7 @@ from django.urls import reverse
 from team_sprint.users.forms import UserAdminChangeForm
 from team_sprint.users.models import User
 from team_sprint.users.tests.factories import UserFactory
-from team_sprint.users.views import (
-    UserRedirectView,
-    UserUpdateView,
-    user_detail_view,
-)
+from team_sprint.users.views import UserRedirectView, UserUpdateView, user_detail_view
 
 pytestmark = pytest.mark.django_db
 

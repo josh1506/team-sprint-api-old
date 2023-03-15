@@ -1,16 +1,17 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 
-from team_sprint.project.models import Project
 from team_sprint.organization.models import Organization
-
+from team_sprint.project.models import Project
 
 User = get_user_model()
 
 
 class Sprint(models.Model):
     name = models.CharField(max_length=255, null=False, blank=False)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=False, blank=False)
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, null=False, blank=False
+    )
     status = models.CharField(max_length=255, null=True, blank=True)
     lead = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=False)

@@ -13,7 +13,5 @@ class SprintAdmin(admin.ModelAdmin):
         "lead",
         "due_date",
     )
-    search_fields = (
-        "name",
-    )
+    search_fields = ("name",)
     exclude = ("date_created",)
