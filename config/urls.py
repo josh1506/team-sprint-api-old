@@ -16,6 +16,10 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("team_sprint.users.urls", namespace="users")),
+    path(
+        "organization/",
+        include("team_sprint.organization.urls", namespace="organization"),
+    ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
