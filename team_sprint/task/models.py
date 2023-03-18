@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from team_sprint.organization.models import Organization, TaskType
+from team_sprint.organization.models import Organization
 from team_sprint.project.models import Project
 from team_sprint.sprint.models import Sprint
 

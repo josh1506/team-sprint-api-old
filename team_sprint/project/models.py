@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from team_sprint.organization.models import Organization, PriorityType, StatusType
+from team_sprint.organization.models import Organization
 
 User = get_user_model()
 
