@@ -28,6 +28,10 @@ urlpatterns = [
         "organization/<int:org_id>/project/",
         include("team_sprint.project.urls", namespace="project"),
     ),
+    path(
+        "organization/<int:org_id>/project/<int:proj_id>/sprint/",
+        include("team_sprint.sprint.urls", namespace="sprint"),
+    ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
