@@ -20,6 +20,14 @@ urlpatterns = [
         "organization/",
         include("team_sprint.organization.urls", namespace="organization"),
     ),
+    path(
+        "organization/<int:org_id>/management/",
+        include("team_sprint.org_management.urls", namespace="management"),
+    ),
+    path(
+        "organization/<int:org_id>/project/",
+        include("team_sprint.project.urls", namespace="project"),
+    ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

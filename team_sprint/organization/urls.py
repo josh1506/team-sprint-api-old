@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import path
 
 from team_sprint.organization import views
 
@@ -10,9 +10,5 @@ urlpatterns = [
         "<int:org_id>/modify/",
         view=views.OrganizationModifyView.as_view(),
         name="modify",
-    ),
-    path(
-        "<int:org_id>/management/",
-        include("team_sprint.org_management.urls", namespace="management"),
     ),
 ]

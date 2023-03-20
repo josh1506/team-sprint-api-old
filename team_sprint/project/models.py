@@ -18,8 +18,10 @@ class Project(models.Model):
     privacy = models.CharField(
         max_length=255, choices=PRIVACY_TYPES, default="public", null=False
     )
-    lead = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=False)
+    lead = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    organization = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, null=False, related_name="project"
+    )
     due_date = models.DateField(blank=True, null=True)
     date_created = models.DateTimeField(auto_now=True)
 

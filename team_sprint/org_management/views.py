@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -51,10 +52,10 @@ class PriorityTypeDetailView(APIView):
     def validate_org_and_priority(self, org_id, priority_id):
         organization = Organization.objects.filter(pk=org_id).first()
         if not organization:
-            return Response("Organization not found.", status=status.HTTP_404_NOT_FOUND)
+            raise NotFound("Organization not found.")
         priority = PriorityType.objects.filter(pk=priority_id).first()
         if not priority:
-            return Response("Priority not found.", status=status.HTTP_404_NOT_FOUND)
+            raise NotFound("Priority not found.")
         return priority
 
     def get_permissions(self):
@@ -121,10 +122,10 @@ class StatusTypeDetailView(APIView):
     def validate_org_and_status(self, org_id, status_id):
         organization = Organization.objects.filter(pk=org_id).first()
         if not organization:
-            return Response("Organization not found.", status=status.HTTP_404_NOT_FOUND)
+            raise NotFound("Organization not found.")
         status_type = StatusType.objects.filter(pk=status_id).first()
         if not status_type:
-            return Response("Status not found.", status=status.HTTP_404_NOT_FOUND)
+            raise NotFound("Status not found.")
         return status_type
 
     def get_permissions(self):
@@ -169,7 +170,7 @@ class TaskTypeListView(APIView):
         organization = Organization.objects.filter(pk=org_id).first()
         if not organization:
             return Response("Organization not found.", status=status.HTTP_404_NOT_FOUND)
-        serializer = TaskTypeSerializer(organization.type.all(), many=True)
+        serializer = TaskTypeSerializer(organization.task_type.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, org_id):
@@ -191,10 +192,10 @@ class TaskTypeDetailView(APIView):
     def validate_org_and_task_type(self, org_id, task_type_id):
         organization = Organization.objects.filter(pk=org_id).first()
         if not organization:
-            return Response("Organization not found.", status=status.HTTP_404_NOT_FOUND)
+            raise NotFound("Organization not found.")
         task_type = TaskType.objects.filter(pk=task_type_id).first()
         if not task_type:
-            return Response("Task type not found.", status=status.HTTP_404_NOT_FOUND)
+            raise NotFound("Task type not found.")
         return task_type
 
     def get_permissions(self):
