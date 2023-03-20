@@ -14,14 +14,20 @@ class Task(models.Model):
     description = models.TextField()
     type = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=255, null=True, blank=True)
-    assigned = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    assigned = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True, related_name="task"
+    )
     priority = models.CharField(max_length=255, null=True, blank=True)
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE, null=True, blank=True)
     project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, null=False, blank=False
+        Project, on_delete=models.CASCADE, null=False, blank=False, related_name="task"
     )
     organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, null=False, blank=False
+        Organization,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        related_name="task",
     )
     due_date = models.DateField(null=True, blank=True)
     date_created = models.DateTimeField(auto_now=True)
