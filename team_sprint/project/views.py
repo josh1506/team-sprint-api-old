@@ -1,14 +1,14 @@
 from rest_framework import status
-from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from team_sprint.organization.models import Organization
 from team_sprint.organization.permissions import OrgMemberPermission
+from team_sprint.organization.validations import validate_organization
 
-from .models import Project
 from .serializers import ProjectSerializer
+from .validations import validate_project
 
 
 class ProjectListView(APIView):
@@ -22,20 +22,16 @@ class ProjectListView(APIView):
             permissions.append(OrgMemberPermission(org_model=organization))
         return permissions
 
-    def get(self, request, org_id):
-        organization = Organization.objects.filter(pk=org_id).first()
-        if not organization:
-            return Response("Organization not found.", status=status.HTTP_404_NOT_FOUND)
-        serializer = ProjectSerializer(organization.project.all(), many=True)
+    def get(self, request, *args, **kwargs):
+        org_model = validate_organization(org_id=kwargs.get("org_id"))
+        serializer = ProjectSerializer(org_model.project.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, org_id):
-        organization = Organization.objects.filter(pk=org_id).first()
-        if not organization:
-            return Response("Organization not found.", status=status.HTTP_404_NOT_FOUND)
+    def post(self, request, *args, **kwargs):
+        org_model = validate_organization(org_id=kwargs.get("org_id"))
         serializer = ProjectSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(organization=organization)
+            serializer.save(organization=org_model)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -43,38 +39,31 @@ class ProjectListView(APIView):
 class ProjectDetailView(APIView):
     serializer_class = ProjectSerializer
 
-    def validate_org_and_project(self, org_id, proj_id):
-        organization = Organization.objects.filter(pk=org_id).first()
-        if not organization:
-            raise NotFound("Organization not found.")
-        project = Project.objects.filter(pk=proj_id).first()
-        if not project:
-            raise NotFound("Project not found.")
-        return project
-
     def get_permissions(self):
         permissions = [IsAuthenticated()]
-        print("||| Working |||")
         org_id = self.kwargs.get("org_id")
         organization = Organization.objects.filter(pk=org_id).first()
         if organization:
             permissions.append(OrgMemberPermission(org_model=organization))
         return permissions
 
-    def get(self, request, org_id, proj_id):
-        project = self.validate_org_and_project(org_id, proj_id)
-        serializer = ProjectSerializer(project)
+    def get(self, request, *args, **kwargs):
+        validate_organization(org_id=kwargs.get("org_id"))
+        proj_model = validate_project(proj_id=kwargs.get("proj_id"))
+        serializer = ProjectSerializer(proj_model)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request, org_id, proj_id):
-        project = self.validate_org_and_project(org_id, proj_id)
-        serializer = ProjectSerializer(project, data=request.data)
+    def put(self, request, *args, **kwargs):
+        validate_organization(org_id=kwargs.get("org_id"))
+        proj_model = validate_project(proj_id=kwargs.get("proj_id"))
+        serializer = ProjectSerializer(proj_model, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, org_id, proj_id):
-        project = self.validate_org_and_project(org_id, proj_id)
-        project.delete()
+    def delete(self, request, *args, **kwargs):
+        validate_organization(org_id=kwargs.get("org_id"))
+        proj_model = validate_project(proj_id=kwargs.get("proj_id"))
+        proj_model.delete()
         return Response("Project deleted successfully.", status=status.HTTP_200_OK)

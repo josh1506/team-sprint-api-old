@@ -1,32 +1,16 @@
 from rest_framework import status
-from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from team_sprint.organization.models import Organization
 from team_sprint.organization.permissions import OrgMemberPermission
-from team_sprint.project.models import Project
+from team_sprint.organization.validations import validate_organization
+from team_sprint.project.validations import validate_project
 
 from .models import Sprint
 from .serializers import SprintSerializer
-
-
-def validate_org_and_project(org_id, proj_id) -> dict:
-    organization = Organization.objects.filter(pk=org_id).first()
-    if not organization:
-        raise NotFound("Organization not found.")
-    project = Project.objects.filter(pk=proj_id).first()
-    if not project:
-        raise NotFound("Project not found.")
-    return {"organization": organization, "project": project}
-
-
-def validate_sprint(sprint_id) -> dict:
-    sprint = Sprint.objects.filter(pk=sprint_id).first()
-    if not sprint:
-        raise NotFound("Sprint not found.")
-    return sprint
+from .validations import validate_sprint
 
 
 class SprintOrgListView(APIView):
@@ -40,11 +24,10 @@ class SprintOrgListView(APIView):
             permissions.append(OrgMemberPermission(org_model=organization))
         return permissions
 
-    def get(self, request, org_id, proj_id):
-        validated_data = validate_org_and_project(org_id, proj_id)
-        serializer = SprintSerializer(
-            validated_data["organization"].sprint.all(), many=True
-        )
+    def get(self, request, *args, **kwargs):
+        validate_project(proj_id=kwargs.get("proj_id"))
+        org_model = validate_organization(org_id=kwargs.get("org_id"))
+        serializer = SprintSerializer(org_model.sprint.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -59,9 +42,10 @@ class SprintProjectListView(APIView):
             permissions.append(OrgMemberPermission(org_model=organization))
         return permissions
 
-    def get(self, request, org_id, proj_id):
-        validated_data = validate_org_and_project(org_id, proj_id)
-        serializer = SprintSerializer(validated_data["project"].sprint.all(), many=True)
+    def get(self, request, *args, **kwargs):
+        validate_organization(org_id=kwargs.get("org_id"))
+        proj_model = validate_project(proj_id=kwargs.get("proj_id"))
+        serializer = SprintSerializer(proj_model.sprint.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -76,13 +60,14 @@ class SprintCreateView(APIView):
             permissions.append(OrgMemberPermission(org_model=organization))
         return permissions
 
-    def post(self, request, org_id, proj_id):
-        validated_data = validate_org_and_project(org_id, proj_id)
+    def post(self, request, *args, **kwargs):
+        org_model = validate_organization(org_id=kwargs.get("org_id"))
+        proj_model = validate_project(proj_id=kwargs.get("proj_id"))
         serializer = SprintSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(
-                organization=validated_data["organization"],
-                project=validated_data["project"],
+                organization=org_model,
+                project=proj_model,
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -100,22 +85,25 @@ class SprintDetailView(APIView):
         return permissions
 
     def get(self, request, *args, **kwargs):
-        validate_org_and_project(org_id=kwargs["org_id"], proj_id=kwargs["proj_id"])
-        validated_sprint = validate_sprint(sprint_id=kwargs["sprint_id"])
-        serializer = SprintSerializer(validated_sprint)
+        validate_organization(kwargs.get("org_id"))
+        validate_project(kwargs.get("proj_id"))
+        sprint_model = validate_sprint(sprint_id=kwargs.get("sprint_id"))
+        serializer = SprintSerializer(sprint_model)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, *args, **kwargs):
-        validate_org_and_project(org_id=kwargs["org_id"], proj_id=kwargs["proj_id"])
-        validated_sprint = validate_sprint(sprint_id=kwargs["sprint_id"])
-        serializer = SprintSerializer(validated_sprint, data=request.data)
+        validate_organization(kwargs.get("org_id"))
+        validate_project(kwargs.get("proj_id"))
+        sprint_model = validate_sprint(sprint_id=kwargs.get("sprint_id"))
+        serializer = SprintSerializer(sprint_model, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
-        validate_org_and_project(org_id=kwargs["org_id"], proj_id=kwargs["proj_id"])
-        validated_sprint = validate_sprint(sprint_id=kwargs["sprint_id"])
-        validated_sprint.delete()
+        validate_organization(kwargs.get("org_id"))
+        validate_project(kwargs.get("proj_id"))
+        sprint_model = validate_sprint(sprint_id=kwargs.get("sprint_id"))
+        sprint_model.delete()
         return Response("Sprint deleted successfully.", status=status.HTTP_200_OK)

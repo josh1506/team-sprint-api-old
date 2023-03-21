@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from .models import Organization
 from .permissions import OrgMemberPermission, OrgOwnerPermission
 from .serializers import OrganizationSerializer
+from .validations import validate_organization
 
 
 class OrganizationView(APIView):
@@ -39,11 +40,9 @@ class OrganizationDetailView(APIView):
             permissions.append(OrgMemberPermission(org_model=organization))
         return permissions
 
-    def get(self, request, org_id):
-        organization = Organization.objects.filter(pk=org_id).first()
-        if not organization:
-            return Response("Organization not found.", status=status.HTTP_404_NOT_FOUND)
-        serializer = OrganizationSerializer(organization)
+    def get(self, request, *args, **kwargs):
+        org_model = validate_organization(org_id=kwargs.get("org_id"))
+        serializer = OrganizationSerializer(org_model)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -58,17 +57,13 @@ class OrganizationModifyView(APIView):
             permission.append(OrgOwnerPermission(org_model=organization))
         return permission
 
-    def put(self, request, org_id):
-        organization = Organization.objects.filter(pk=org_id).first()
-        if not organization:
-            return Response("Organization not found.", status=status.HTTP_404_NOT_FOUND)
-        organization.name = request.data.get("name")
-        organization.save()
+    def put(self, request, *args, **kwargs):
+        org_model = validate_organization(org_id=kwargs.get("org_id"))
+        org_model.name = request.data.get("name")
+        org_model.save()
         return Response("Organization updated.", status=status.HTTP_200_OK)
 
-    def delete(self, request, org_id):
-        organization = Organization.objects.filter(pk=org_id).first()
-        if not organization:
-            return Response("Organization not found.", status=status.HTTP_404_NOT_FOUND)
-        organization.delete()
+    def delete(self, request, *args, **kwargs):
+        org_model = validate_organization(org_id=kwargs.get("org_id"))
+        org_model.delete()
         return Response("Organization deleted.", status=status.HTTP_200_OK)
