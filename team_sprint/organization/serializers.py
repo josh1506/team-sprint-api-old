@@ -20,3 +20,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
             "code",
         )
         read_only_fields = ("id", "logo", "code")
+
+
+class CodeSerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=6)

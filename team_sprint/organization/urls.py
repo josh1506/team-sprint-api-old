@@ -11,4 +11,6 @@ urlpatterns = [
         view=views.OrganizationModifyView.as_view(),
         name="modify",
     ),
+    path("generatecode/", view=views.OrgCodeView.as_view(), name="generate-code"),
+    path("join/", view=views.JoinOrgView.as_view(), name="join-code"),
 ]
