@@ -25,7 +25,6 @@ class TaskOrgList(APIView):
         return permissions
 
     def get(self, request, *args, **kwargs):
-        validate_project(proj_id=kwargs.get("proj_id"))
         org_model = validate_organization(org_id=kwargs.get("org_id"))
         serializer = TaskSerializer(org_model.task.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

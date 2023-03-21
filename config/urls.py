@@ -16,26 +16,6 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("team_sprint.users.urls", namespace="users")),
-    path(
-        "organization/",
-        include("team_sprint.organization.urls", namespace="organization"),
-    ),
-    path(
-        "organization/<int:org_id>/management/",
-        include("team_sprint.org_management.urls", namespace="management"),
-    ),
-    path(
-        "organization/<int:org_id>/project/",
-        include("team_sprint.project.urls", namespace="project"),
-    ),
-    path(
-        "organization/<int:org_id>/project/<int:proj_id>/sprint/",
-        include("team_sprint.sprint.urls", namespace="sprint"),
-    ),
-    path(
-        "organization/<int:org_id>/project/<int:proj_id>/task/",
-        include("team_sprint.task.urls", namespace="task"),
-    ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -51,6 +31,26 @@ urlpatterns += [
         "api/docs/",
         SpectacularSwaggerView.as_view(url_name="api-schema"),
         name="api-docs",
+    ),
+    path(
+        "api/organization/",
+        include("team_sprint.organization.urls", namespace="organization"),
+    ),
+    path(
+        "api/organization/<int:org_id>/management/",
+        include("team_sprint.org_management.urls", namespace="management"),
+    ),
+    path(
+        "api/organization/<int:org_id>/project/",
+        include("team_sprint.project.urls", namespace="project"),
+    ),
+    path(
+        "api/organization/<int:org_id>/",
+        include("team_sprint.sprint.urls", namespace="sprint"),
+    ),
+    path(
+        "api/organization/<int:org_id>/",
+        include("team_sprint.task.urls", namespace="task"),
     ),
 ]
 
