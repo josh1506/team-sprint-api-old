@@ -91,7 +91,7 @@ class OrgCodeView(APIView):
                     break
             except Exception as e:
                 print(e)
-        serializer = CodeSerializer(unique_code)
+        serializer = CodeSerializer(data={"code": unique_code})
         if serializer.is_valid():
             org_model.code = unique_code
             org_model.save()
