@@ -51,7 +51,6 @@ ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 
 # APPS
-# ------------------------------------------------------------------------------
 DJANGO_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -59,10 +58,12 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "jazzmin",
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
 ]
+# ------------------------------------------------------------------------------
 THIRD_PARTY_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
@@ -334,3 +335,12 @@ SPECTACULAR_SETTINGS = {
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
+JAZZMIN_SETTINGS = {
+    "site_title": "Admin Dashboard",
+    "site_header": "Admin Dashboard",
+    "welcome_sign": "Welcome to Admin Dashboard",
+    # List of model admins to search from the search bar, search bar omitted if excluded
+    # If you want to use a single search field you dont need to use a list, you can use a simple string
+    "show_sidebar": True,
+    "navigation_expanded": True,
+}
