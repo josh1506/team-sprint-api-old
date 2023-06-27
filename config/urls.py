@@ -32,6 +32,26 @@ urlpatterns += [
         SpectacularSwaggerView.as_view(url_name="api-schema"),
         name="api-docs",
     ),
+    path(
+        "api/organization/",
+        include("team_sprint.organization.urls", namespace="organization"),
+    ),
+    path(
+        "api/organization/<int:org_id>/management/",
+        include("team_sprint.org_management.urls", namespace="management"),
+    ),
+    path(
+        "api/organization/<int:org_id>/project/",
+        include("team_sprint.project.urls", namespace="project"),
+    ),
+    path(
+        "api/organization/<int:org_id>/",
+        include("team_sprint.sprint.urls", namespace="sprint"),
+    ),
+    path(
+        "api/organization/<int:org_id>/",
+        include("team_sprint.task.urls", namespace="task"),
+    ),
 ]
 
 if settings.DEBUG:
